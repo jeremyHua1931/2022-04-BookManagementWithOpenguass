@@ -1,0 +1,131 @@
+.niceButton2{
+    position: relative;
+    background-color: rgb(32, 93, 224);
+    border: none;
+    font-size: 28px;
+    color: #ffffff;
+    padding: 20px;
+    width: 200px;
+    text-align: center;
+    transition-duration: 0.6s;
+    text-decoration: none;
+    overflow: hidden;
+    cursor: pointer;
+}
+.niceButton2::after{
+    content: '';
+    background:#53a4f0;
+    display: block;
+    position: absolute;
+    padding-top: 300%;
+    padding-left: 350%;
+    margin-left: -20px !important;
+    margin-top: -120%;
+    opacity: 0;
+    transition:all 0.8s;
+}
+.niceButton2:active::after{
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    transition: 0s;
+}
+
+
+/*.niceButton{*/
+/*    display: inline-block;*/
+/*    padding: 15px 25px;*/
+/*    font-size: 24px;*/
+/*    cursor: pointer;*/
+/*    text-align: center;*/
+/*    text-decoration: none;*/
+/*    outline: none;*/
+/*    color:#fff;*/
+/*    background-color: rgb(16, 185, 214);*/
+/*    border: none;*/
+/*    border-radius: 15px;*/
+/*    box-shadow: 0 9px #999;*/
+/*}*/
+.niceButton:hover{
+    background-color: #1795bb;
+}
+.niceButton:active{
+    background-color: #FFFFF;
+    /*box-shadow: 0 5px #666;*/
+    transform:translateY(4px);
+}
+
+.niceButton3{
+    background-color: #1795bb;
+    border: none;
+    color:white;
+    padding:16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+.niceButton3:hover{
+    background-color: #fff;
+    color: #1795bb;
+}
+
+.niceButton4{
+    background-color: skyblue;
+    border: none;
+    color:white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+    -webkit-transition-duration: 0.4s;
+}
+.niceButton4:hover{
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,.24),
+    0 17px 50px 0 rgba(0,0,0,.19);
+}
+/* 悬停添加箭头图标 */
+.niceButton5{
+    display: inline-block;
+    border-radius: 4px;
+    background-color:#f4511e;
+    border: none;
+    color:#ffff;
+    text-align: center;
+    font-size: 28px;
+    padding: 20px;
+    width: 200px;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 5px;
+    vertical-align: middle;
+}
+.niceButton5 span{
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+.niceButton5 span::after{
+    content: ">>";
+    position: absolute;
+    opacity: 0;
+    top:0;
+    right: -20px;
+    transition: 0.5s;
+}
+.niceButton5:hover span{
+    padding-right: 25px;
+}
+.niceButton5 span::after{
+    opacity: 1;
+    right: 0;
+}

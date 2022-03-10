@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/bootstrap.min.css" >
+    <link rel="stylesheet" href="./css/bootstrap-table.min.css">
+    <link rel="stylesheet" href="./css/bootstrap-editable.css" type="text/css">
+    <link rel="shortcut icon" href="./favicon.ico">
+
+    <style>
+        #table tr:nth-child(even){
+            background: #fafafa;
+        }
+        #table th{
+            background: #efefef;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+
+</script>
+<div class="back">
+
+<div class="container">
+    <div style="margin-top: 15px">
+
+        <a href="./user_paper.html">
+            <button class="btn btn-default" style="margin-right:  20px ;width: 120px ;background-color: #7ED321;height: 36px;color: #FFFFFF">论文板块</button>
+
+        </a>
+        <a href="./user_record.html">
+            <button class="btn btn-default" style="margin-right:  20px ;width: 120px ;background-color: #7ED321;height: 36px;color: #FFFFFF">借阅记录</button>
+        </a>
+        <a href="./login.html">
+            <button class="btn btn-default" style="margin-right:  20px ;width: 120px ;float: right">退出</button>
+        </a>
+
+        <p></p>
+        <button id="build" class="btn btn-default" style="margin-right:  20px ;width: 80px ;background-color: #168bef;height: 36px;color: #FFFFFF">查阅</button>
+        <!--<button id="delete" class="btn btn-default">Delete</button>-->
+        <!--<button id="blank" class="btn btn-default">Add a blank line</button>-->
+    </div>
+    <div class = table-responsive">
+        <table id="table"
+               class="table text-nowrap"
+               data-toggle="table"
+               data-show-columns="true"
+               data-search="true"
+               data-show-refresh="true"
+               data-show-toggle="true"
+               data-pagination="true"
+               data-height="500">
+            <thead>
+            <tr>
+                <th data-field="book_id">ID</th>
+                <th data-field="book_name">书名</th>
+                <th data-field="author">作者</th>
+                <th data-field="shelf">书架</th>
+                <th data-field="type">类型</th>
+                <th data-field="collection_number">总数</th>
+                <th data-field="existing_number">现有</th>
+                <th data-field="price">价格</th>
+                <th data-field="publisher">出版社</th>
+                <th data-field="introduction">介绍</th>
+                <th data-field="operation">操作</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+</div>
+
+<style>
+    .page-content-wrapper {
+        width: 800px;
+        position: absolute;
+        top: 10%;
+        left: 24%;
+        background: #fff;
+        border: 1px solid #999;
+        padding: 3% 0 0 9%;
+        display: none;
+    }
+    .inputstyle {
+        width: 60%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+</style>
+
+<table id="mytab" class="table table-hover"></table>
+<!-- 新增和修改界面 -->
+<div class="page-content-wrapper">
+    <input type="text" class="inputstyle" id="id" style="display: none;">
+    <p>请选择借书还是还书：</p>
+    <div class="form-group">
+        <label for="cbox1">借书：</label>
+        <input type="checkbox" name="edit_way" id="cbox1" value="0">
+        <label for="cbox1">还书：</label>
+        <input type="checkbox" name="edit_way" id="cbox2" value="1">
+    </div>
+    <p>请确认要借阅/归还的ID和书名是否正确：</p>
+    <div class="form-group">
+        <label>当前图书ID为：</label> <input type="text" class="inputstyle" id="book_id">
+    </div>
+    <div class="form-group">
+        <label>书名为：</label> <input type="text" class="inputstyle" id="book_name">
+    </div>
+    <div class="form-group">
+        <label>当前图书总共有：</label> <input type="text" class="inputstyle" id="collection_number">
+    </div>
+    <div class="form-group">
+        <label>现有库存：</label> <input type="text" class="inputstyle" id="existing_number">
+    </div>
+    <div class="form-group">
+        <label>请输入要借阅/归还的数目：</label> <input type="text" class="inputstyle" id="numm">
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn default" data-dismiss="modal" id="close">Close</button>
+        <button type="button" class="btn blue" id="updateBtn">Save</button>
+
+    </div>
+</div>
+
+
+
+<script src="./js/jquery.min.js"></script>
+<script src="./js/bootstrap.min.js"></script>
+<!--<script src="assets/bootstrap2.3/js/bootstrap.min.js"></script>-->
+<script src="./js/tableExport.js"></script>
+<script src="./js/jquery.base64.js"></script>
+<script src="./js/bootstrap-table.js"></script>
+<script src="./js/bootstrap-table-export.js"></script>
+
+
+<script>
+    var author;
+    var price;
+    var publisher;
+    var introduction;
+
+
+
+
+
+
+    //data-url="data/data1.json"
+    $(function () {
+        $('#build').click(build);//.trigger('click');
+        $('#cells, #rows').keyup(function (e) {
+            if (e.keyCode === 13) {
+                build();
+            }
+        });
+    });
+
+    function actionFormatter(value, row, index) {
+        var id = value;
+        var result = "";
+        result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"EditViewById('" + id + "', view='view')\" title='查看'><span class='glyphicon glyphicon-circle-arrow-up'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditViewById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-circle-arrow-down'></span></a>";
+        return result;
+    }
+
+
+    //表格超出宽度鼠标悬停显示td内容
+    function paramsMatter(value, row, index) {
+        var span = document.createElement("span");
+        span.setAttribute("title", value);
+        span.innerHTML = value;
+        return span.outerHTML;
+    }
+    //td宽度以及内容超过宽度隐藏
+    function formatTableUnit(value, row, index) {
+        return {
+            css: {
+                "white-space": "nowrap",
+                "text-overflow": "ellipsis",
+                "overflow": "hidden",
+                "max-width": "80px"
+            }
+        }
+    }
+
+
+
+
+    //查阅所有论文信息信息
+    function build(){
+        console.log("查询所有的书籍信息");
+        build_0("0","0");
+    }
+
+
+
+
+    function build_0(ID,KIND) {
+        //这里写刷新表格连接数据库的报文
+
+
+        let data;
+        let obj={ID,KIND};
+        let post_all=JSON.stringify(obj);
+        console.log("post_all"+post_all);
+
+        $.ajax({
+            type: "POST",
+        //    url: "",这里填写数据库调用接口
+            url:"queryAll",
+            dataType: "json",
+            data:post_all,
+            contentType : "application/json",
+            success: function (data_json) {
+                data=data_json,
+                $('#table').bootstrapTable('destroy').bootstrapTable({
+                    columns: columns,
+                    data: data
+                });
+                // build();
+            },
+            error: function () {
+                // alert("错误");
+                alert("查询失败,请重新查询");
+            }
+
+        });
+
+
+        let columns = [
+
+            // {
+            //     field:'number',
+            //     title:'index',
+            //     formatter:indexFormatter,
+            // },
+            {
+                field: 'book_id',
+                title: 'ID',
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+            },{
+                field: 'book_name',
+                title: '书名',
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+                //editable:true,
+            }, {
+                field: 'author',
+                title: '作者',
+                //editable:true,
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+            },
+            , {
+                field: 'shelf',
+                title: '书架',
+                //editable:true,
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+            },
+            , {
+                field: 'type',
+                title: '类型',
+                //editable:true,
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+            }, {
+                field: 'collection_number',
+                title: '总数',
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+            }, {
+                field: 'existing_number',
+                title: '现有',
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+            }, {
+                field: 'price',
+                title: '价格',
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+            }, {
+                field: 'publisher',
+                title: '出版社',
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+            },
+            {
+                field: 'introduction',
+                title: '介绍',
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+            },
+            {
+                field:'operation',
+                title: '操作',
+                align: 'center',
+                valign: 'middle',
+                formatter:option,
+                // formatter: actionFormatter
+            }, ];
+
+
+
+
+        $('#table').bootstrapTable('destroy').bootstrapTable({
+            columns: columns,
+            data: data,
+            clickToSelect: true,
+            showPaginationSwitch: true,
+
+        });
+
+
+        $('#table').resize();
+
+    }
+
+
+    function option(value, row, index) {
+        var htm = "";
+        htm = '<button id="upd"  onclick="update(\'' + escape(JSON.stringify(row)) + '\')">借书/还书</button>';
+        return htm;
+    }
+
+    function update(row) {
+        $(".page-content-wrapper").show();
+        var data = JSON.parse(unescape(row))
+        $('#book_id').val(data.book_id)
+        $('#book_name').val(data.book_name)
+        $('#collection_number').val(data.collection_number)
+        $('#existing_number').val(data.existing_number)
+        author = data.author;
+        price = data.price;
+        publisher = data.publisher;
+        introduction = data.introduction;
+    }
+    $("#close").on("click", function() {
+        $(".page-content-wrapper").hide();
+    })
+
+
+    $("#updateBtn").on("click",function (){
+        var obj=document.getElementsByName('edit_way'); //选择所有name="'edit_way'"的对象，返回数组
+        //取到对象数组后，我们来循环检测它是不是被选中
+        var s='';
+        for(var i=0; i<obj.length; i++){
+            if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中
+        }
+        if(s.length==0)
+        {
+            alert("还没有选择借书或者还书！")
+        }
+        else if(s.length==4)
+        {
+            alert("不能同时选择两种方式！")
+        }
+        else {
+            let numm;
+
+            if (s[0]=="0") //0是借书
+            {
+                 numm=  "-"+$("#numm").val();
+                console.log("借书:"+numm);
+            }else if(s[0]=="1"){
+                numm =  "+"+$("#numm").val();
+                console.log("还书:"+numm);
+            };
+
+            let edit_id=s[0];
+
+            var objectID = $("#book_id").val();
+            var book_name = $("#book_name").val();
+            var collection_number= $("#collection_number").val();
+            var existing_number = $("#existing_number").val();
+
+            var edit_num;
+            var idd = '2';
+
+                console.log("开始判断");
+                console.log(parseInt(numm));
+                console.log(parseInt(existing_number));
+                console.log(parseInt(collection_number));
+            if (parseInt(numm) > parseInt(existing_number) && edit_id === "0")
+            {
+                // console.log("操作后书本"+(parseInt(existing_number)-parseInt(numm)));
+                alert("借阅数量超过库存数量！");
+            }else if(parseInt(numm)+parseInt(existing_number)>parseInt(collection_number) && edit_id==="1")
+            {
+                // console.log("操作后书本"+parseInt(numm)+parseInt(existing_number));
+                alert("还书错误");
+            } else {
+                if (edit_id==="0")
+                {
+                    edit_num = (parseInt(existing_number)-parseInt(numm)).toString();
+                    console.log(edit_num)
+                }
+                else if (edit_id==="1")
+                {
+                    edit_num = (parseInt(existing_number)+parseInt(numm)).toString();
+                    console.log(edit_num)
+                }
+
+
+                let data;
+                let obj={};
+                obj.id="1";
+                obj.userID="后端判断";
+                obj.objectID=objectID;
+                obj.number=numm;
+                obj.book_name=book_name;
+                let post_all=JSON.stringify(obj);
+                console.log(post_all);
+                // 下面填写ajax报文
+                    $.ajax({
+                    type: "post",
+                    url: "userOp" ,  //填写数据库url
+                    dataType: "json",
+                    contentType : "application/json",
+                    data:post_all,
+                    success: function (data_json) {
+
+                        console.log(data_json);
+                        build();
+                        // location = location;
+                    },
+                    error: function () {
+                        alert("借阅失败,请重新操作");
+                    }
+                })
+
+
+
+
+            }
+
+        }
+
+
+    })
+
+
+
+
+
+</script>
+</body>
+</html>

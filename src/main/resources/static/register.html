@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+
+<html style="height: 100%;" lang="en">
+
+<head>
+    <meta content=" width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport" />
+
+    <meta http-equiv="Content-Type" content=text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>登录</title>
+
+    <link rel="stylesheet" type="text/css" href="css/default.css" />
+
+    <link href="css/index.css" rel="stylesheet" />
+
+    <link href="fonts/iconfont.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="./favicon.ico">
+
+    <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+
+    <style>
+        #table tr:nth-child(even){
+            background: #fafafa;
+        }
+        #table th{
+            background: #efefef;
+        }
+    </style>
+
+</head>
+
+<body style="height:100%;">
+
+<div class="boxer">
+<!--    <h2 class="logo"><img src="" /></h2>-->
+    <div class="box1">
+        <div class="middle1">
+            <div class="middle_left">
+                <img src="images/login_pic.jpg"  alt="null"/>
+            </div>
+            <div class="middle_right">
+                <div class="mr_box">
+                    <h2>文献管理系统</h2>
+                    <!--						<h2>欢迎登录</h2>-->
+                    <form>
+                        <div class="form-group mar_b">
+                            <span class="iconfont icon-Profile icon_p"></span>
+                            <input type="email" class="form-control icon-user" id="username1" placeholder="请输入您的学号">
+
+                        </div>
+                        <div class="form-group mar_b">
+                            <span class="iconfont icon-Profile icon_p"></span>
+                            <input type="text" class="form-control icon-pass" id="stuName"
+                                   placeholder="请输入您的姓名">
+
+                        </div>
+                        <div class="form-group mar_b">
+                            <span class="iconfont icon-Unlock icon_p"></span>
+                            <input type="password" class="form-control icon-pass" id="password1"
+                                   placeholder="请输入您的密码">
+
+                        </div>
+
+
+<!--                        <div class="form-check font-s">-->
+<!--                            <div class="custom-control custom-checkbox small">-->
+<!--                                <input type="checkbox" class="custom-control-input" id="customCheck">-->
+<!--                                <label class="custom-control-label" for="customCheck">记住密码</label>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <!--							<div class="f_pass">-->
+                        <!--&lt;!&ndash;								<div class="f_pass_n">&ndash;&gt;-->
+                        <!--&lt;!&ndash;									<i class="fl"><img src="images/sq.png"></i>&ndash;&gt;-->
+                        <!--&lt;!&ndash;									<p>密码不正确,请重新输入!</p>&ndash;&gt;-->
+                        <!--&lt;!&ndash;								</div>&ndash;&gt;-->
+                        <!--							</div>-->
+                        <button type="button" class="login" id="login1">注册</button>
+                        <button type="button" class="login" id="register1">返回</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script>
+    $("#login1").click(function () {
+        login3();
+
+    })
+    $("#register1").click(function () {
+        window.location.href="login.html";
+
+    })
+
+    function login3() {
+
+        let obj = {};
+        obj.user_name = $("input[id='username1']").val();//用户名
+
+        // if($("input[id='password1']").val()!==$("input[id='password2']").val()){
+        //     window.alert("两次密码不一致请重新输入"); //显示警告框
+        // }
+
+        obj.user_password = $("input[id='password1']").val();//密码
+        obj.stuID= $("input[id='stuName']").val();//密码
+
+        let post_all=JSON.stringify(obj);
+        console.log(post_all);
+
+
+        console.log("用户名");
+        console.log(obj.user_name);
+        console.log("密码");
+        console.log(obj.user_password);
+
+        console.log("姓名");
+        console.log($("input[id='stuName']").val());
+
+        console.log(post_all);
+
+        $.ajax({
+            type: "POST",
+            url: "/register",
+            dataType: "json",
+            data:post_all,
+            contentType : "application/json",
+            success: function (data) { //传回来的json
+
+
+
+                    console.log(data.msg); //传回的信号
+                    console.log("sucess");
+                    // alert(data.msg);
+                    setTimeout(function(){
+
+                    },3000);
+
+                    if(data.msg==="1"){
+                        alert($("input[id='stuName']").val()+"注册成功,3秒后返回登录页面");
+                        window.location.href="login.html";
+                    }else{
+                        alert("用户已存在, 注册失败, 更换用户名进行注册");
+                    }
+
+
+
+
+
+
+
+
+
+
+                // if(data.msg=="0"){
+                //     console.log("admin login")
+                //     window.alert("admin login"); //显示警告框
+                //     // window.location.href="user.html"; //用户页面跳转,去掉注释即可跳转
+                // }else if(data.msg == "1"){
+                //     window.alert("user login"); //显示警告框
+                // }else if(data.msg == "2"){
+                //     window.alert("wrong pwd or user_id"); //显示警告框
+                // }else{
+                //     window.alert("unknown issue"); //显示警告框
+                // }
+
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        })
+
+
+    }
+
+
+</script>
+
+</html>

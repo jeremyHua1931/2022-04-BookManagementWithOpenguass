@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/bootstrap.min.css" >
+    <link rel="stylesheet" href="./css/bootstrap-table.min.css">
+    <link rel="stylesheet" href="./css/bootstrap-editable.css" type="text/css">
+    <link rel="shortcut icon" href="./favicon.ico">
+
+    <style>
+        #table tr:nth-child(even){
+            background: #fafafa;
+        }
+        #table th{
+            background: #efefef;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+
+</script>
+<div class="back">
+
+
+<div class="container">
+    <div style="margin-top: 15px">
+
+        <a href="./user_book.html">
+            <button class="btn btn-default" style="margin-right:  20px ;width: 120px ;background-color: #7ED321;height: 36px;color: #FFFFFF">图书板块</button>
+        </a>
+        <a href="./login.html">
+            <button class="btn btn-default" style="margin-right:  20px ;width: 120px ;float: right">退出</button>
+        </a>
+
+        <p></p>
+        <button id="build" class="btn btn-default" style="margin-right:  20px ;width: 80px ;background-color: #168bef;height: 36px;color: #FFFFFF">查阅</button>
+
+
+        <!--<button id="delete" class="btn btn-default">Delete</button>-->
+        <!--<button id="blank" class="btn btn-default">Add a blank line</button>-->
+    </div>
+    <div class = table-responsive">
+        <table id="table" class="table text-nowrap" data-toggle="table" data-show-columns="true" data-search="true"
+               data-show-refresh="true" data-show-toggle="true" data-pagination="true" data-height="500">
+            <thead>
+            <tr>
+                <th data-field="paper_id">论文号</th>
+                <th data-field="paper_title">论文名</th>
+                <th data-field="author">作者</th>
+                <th data-field="date">发表日期</th>
+                <th data-field="jc_name">期刊（会议）名称</th>
+                <th data-field="issue_number">期号</th>
+                <th data-field="volume_number">卷号</th>
+                <th data-field="page_number">页数</th>
+                <th data-field="doi">DOI</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+</div>
+
+
+
+<script src="./js/jquery.min.js"></script>
+<script src="./js/bootstrap.min.js"></script>
+<!--<script src="assets/bootstrap2.3/js/bootstrap.min.js"></script>-->
+<script src="./js/tableExport.js"></script>
+<script src="./js/jquery.base64.js"></script>
+<script src="./js/bootstrap-table.js"></script>
+<script src="./js/bootstrap-table-export.js"></script>
+
+
+<script>
+
+    function option2(value, row, index) {
+        var htm = "";
+
+        htm = '<button id="url"  onclick="download(\'' + escape(JSON.stringify(row)) + '\')">下载论文</button>';
+        return htm;
+    }
+
+
+    function download(row) {
+        var row1 = JSON.parse(unescape(row))
+        var urll= row1.doi;
+        console.log(urll);
+        window.open(urll);
+    }
+
+
+    //data-url="data/data1.json"
+    $(function () {
+        $('#build').click(build);//.trigger('click');
+        $('#cells, #rows').keyup(function (e) {
+            if (e.keyCode === 13) {
+                build();
+            }
+        });
+    });
+
+
+
+    //表格超出宽度鼠标悬停显示td内容
+    function paramsMatter(value, row, index) {
+        var span = document.createElement("span");
+        span.setAttribute("title", value);
+        span.innerHTML = value;
+        return span.outerHTML;
+    }
+    //td宽度以及内容超过宽度隐藏
+    function formatTableUnit(value, row, index) {
+        return {
+            css: {
+                "white-space": "nowrap",
+                "text-overflow": "ellipsis",
+                "overflow": "hidden",
+                "max-width": "80px"
+            }
+        }
+    }
+
+
+
+
+
+
+    function build() {
+        //这里写刷新表格连接数据库的报文
+        let data;
+        let obj={};
+        obj.id="0";
+        obj.KIND="1";
+        let post_all=JSON.stringify(obj);
+        console.log(post_all);
+
+        $.ajax({
+            type: "POST",
+           url: "queryAll",//这里填写数据库调用接口
+            dataType: "json",
+            data:post_all,
+            contentType : "application/json",
+            success: function (data_json) {
+                $('#table').bootstrapTable('destroy').bootstrapTable({
+                    columns: columns,
+                    data: data_json
+                });
+            },
+            error: function () {
+                alert("查询失败,请重新查询");
+            }
+        });
+
+
+        let columns = [
+
+            // {
+            //     field:'number',
+            //     title:'index',
+            //     formatter:indexFormatter,
+            // },
+            {
+                field: 'paper_id',
+                title: '论文号',
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+            },{
+                field: 'paper_title',
+                title: '论文名',
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+                //editable:true,
+            }, {
+                field: 'author',
+                title: '作者',
+                //editable:true,
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+            }, {
+                field: 'date',
+                title: '发表日期',
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+            }, {
+                field: 'jc_name',
+                title: '期刊（会议）名称',
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+            }, {
+                field: 'issue_number',
+                title: '期号',
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+            }, {
+                field: 'volume_number',
+                title: '卷号',
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+            },
+            {
+                field: 'page_number',
+                title: '页数',
+                cellStyle:formatTableUnit,
+                formatter: paramsMatter,
+            },
+            {
+                field:'doi',
+                title: 'DOI',
+                cellStyle:formatTableUnit,
+                formatter: option2,
+                // formatter: actionFormatter
+            }, ];
+
+
+
+
+        $('#table').bootstrapTable('destroy').bootstrapTable({
+            columns: columns,
+            data: data,
+            clickToSelect: true,
+            showPaginationSwitch: true,
+
+        });
+
+
+        $('#table').resize();
+
+    }
+
+
+</script>
+</body>
+</html>

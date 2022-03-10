@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-table.min.css">
+
+    <link rel="stylesheet" href="css/bootstrap-editable.css" type="text/css">
+    <link rel="shortcut icon" href="./favicon.ico">
+    <link rel="stylesheet" href="css/button.css">
+    <title>管理员用户界面</title>
+    <style>
+        #table tr:nth-child(even){
+            background: #fafafa;
+        }
+        #table th{
+            background: #efefef;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="back">
+    <div class="container">
+
+        <div style="margin-top: 15px">
+
+
+
+            <a href="./admin_paper.html">
+
+                <button class="btn btn-default" style="margin-right:  20px ;width: 120px ;background-color: #7ED321;height: 36px;color: #FFFFFF">论文板块</button>
+            </a>
+
+
+            <a href="./admin_record.html">
+                <button class="btn btn-default" style="margin-right:  20px ;width: 120px ;background-color: #7ED321;height: 36px;color: #FFFFFF">图书借阅记录</button>
+            </a>
+            <a href="./login.html">
+                <button class="btn btn-default" style="margin-right:  20px ;width: 80px ;background-color: #707376;height: 36px;color: #FFFFFF;float: right">退出</button>
+            </a>
+
+        </div>
+        <div>
+            <p> </p>
+        </div>
+        <div style="margin-top: 5px">
+            <button id="build" class="btn btn-default" style="margin-right:  20px ;width: 80px ;background-color: #168bef;height: 36px;color: #FFFFFF">查询</button>
+            <button id="delete" class="btn btn-default" style="margin-right:  20px ;width: 80px ;background-color: #168bef;height: 36px;color: #FFFFFF">删除</button>
+            <button id="blank" class="btn btn-default" style="margin-right:  20px ;width: 80px ;background-color: #168bef;height: 36px;color: #FFFFFF">新增</button>
+
+
+
+        </div>
+        <div class=table-responsive">
+            <table id="table" class="table text-nowrap" data-toggle="table" data-show-columns="true" data-search="true"
+                data-show-refresh="true" data-show-toggle="true" data-pagination="true" data-height="500">
+                <thead>
+                    <tr>
+                        <th data-field="book_id">ID</th>
+                        <th data-field="book_name">书名</th>
+                        <th data-field="author">作者</th>
+                        <th data-field="shelf">书架</th>
+                        <th data-field="type">类型</th>
+                        <th data-field="collection_number">总数</th>
+                        <th data-field="existing_number">现有</th>
+                        <th data-field="price">价格</th>
+                        <th data-field="publisher">出版社</th>
+                        <th data-field="introduction">介绍</th>
+                        <th data-field="operation">操作</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    </div>
+
+    <style>
+        .page-content-wrapper {
+            width: 800px;
+            position: absolute;
+            top: 10%;
+            left: 24%;
+            background: #fff;
+            border: 1px solid #999;
+            padding: 3% 0 0 9%;
+            display: none;
+        }
+
+        .inputstyle {
+            width: 60%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+
+    <table id="mytab" class="table table-hover"></table>
+    <!-- 新增和修改界面 -->
+    <div class="page-content-wrapper">
+        <input type="text" class="inputstyle" id="id" style="display: none;">
+        <p>Tips:只能在新增书本时修改ID</p>
+<!--        <div class="form-group">-->
+<!--            <label for="cbox1">修改数据：</label>-->
+<!--            <input type="checkbox" name="edit_way" id="cbox1" value="2">-->
+<!--            <label for="cbox1">添加数据：</label>-->
+<!--            <input type="checkbox" name="edit_way" id="cbox2" value="3">-->
+<!--        </div>-->
+        <div class="form-group">
+            <label>ID</label> <input type="text" class="inputstyle" id="book_id">
+        </div>
+        <div class="form-group">
+            <label>书名</label> <input type="text" class="inputstyle" id="book_name">
+        </div>
+        <div class="form-group">
+            <label>作者</label> <input type="text" class="inputstyle" id="author">
+        </div>
+
+        <div class="form-group">
+            <label>书架</label> <input type="text" class="inputstyle" id="shelf">
+        </div>
+        <div class="form-group">
+            <label>类型</label> <input type="text" class="inputstyle" id="type">
+        </div>
+
+
+        <div class="form-group">
+            <label>总数</label> <input type="text" class="inputstyle" id="collection_number">
+        </div>
+        <div class="form-group">
+            <label>现有</label> <input type="text" class="inputstyle" id="existing_number">
+        </div>
+        <div class="form-group">
+            <label>价格</label> <input type="text" class="inputstyle" id="price">
+        </div>
+        <div class="form-group">
+            <label>出版社</label> <input type="text" class="inputstyle" id="publisher">
+        </div>
+        <div class="form-group">
+            <label>介绍</label> <input type="text" class="inputstyle" id="introduction">
+        </div>
+
+
+        <div class="modal-footer">
+            <button type="button" class="btn default" data-dismiss="modal" id="close">Close</button>
+            <button type="button" class="btn blue" id="updateBtn">Save</button>
+
+        </div>
+    </div>
+
+
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <!--<script src="assets/bootstrap2.3/js/bootstrap.min.js"></script>-->
+    <script src="js/tableExport.js"></script>
+    <script src="js/jquery.base64.js"></script>
+    <script src="js/bootstrap-table.js"></script>
+    <script src="js/bootstrap-table-export.js"></script>
+
+
+    <script>
+
+
+        //data-url="data/data1.json"
+        $(function () {
+            $('#build').click(build);//.trigger('click');
+            $('#cells, #rows').keyup(function (e) {
+                if (e.keyCode === 13) {
+                    build();
+                }
+            });
+        });
+
+        function actionFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+            result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"EditViewById('" + id + "', view='view')\" title='查看'><span class='glyphicon glyphicon-circle-arrow-up'></span></a>";
+            result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditViewById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-circle-arrow-down'></span></a>";
+            return result;
+        }
+
+
+        //表格超出宽度鼠标悬停显示td内容
+        function paramsMatter(value, row, index) {
+            var span = document.createElement("span");
+            span.setAttribute("title", value);
+            span.innerHTML = value;
+            return span.outerHTML;
+        }
+        //td宽度以及内容超过宽度隐藏
+        function formatTableUnit(value, row, index) {
+            return {
+                css: {
+                    "white-space": "nowrap",
+                    "text-overflow": "ellipsis",
+                    "overflow": "hidden",
+                    "max-width": "80px"
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+        //***********************************************************************************************************************************
+        // 选择请求的类型,并显示在列表上   {id: , kind: }, id表示动作, kind表示书还是论文
+        function build_0(ID,KIND) {
+
+
+            let columns = [
+
+                // {
+                //     field:'number',
+                //     title:'index',
+                //     formatter:indexFormatter,
+                // },
+                {
+                    field: 'book_id',
+                    title: 'ID',
+                    cellStyle: formatTableUnit,
+                    formatter: paramsMatter,
+                }, {
+                    field: 'book_name',
+                    title: '书名',
+                    cellStyle: formatTableUnit,
+                    formatter: paramsMatter,
+                    //editable:true,
+                }, {
+                    field: 'author',
+                    title: '作者',
+                    //editable:true,
+                    cellStyle: formatTableUnit,
+                    formatter: paramsMatter,
+                },
+                {
+                    field: 'shelf',
+                    title: '书架',
+                    //editable:true,
+                    cellStyle: formatTableUnit,
+                    formatter: paramsMatter,
+                },
+                {
+                    field: 'type',
+                    title: '类型',
+                    //editable:true,
+                    cellStyle: formatTableUnit,
+                    formatter: paramsMatter,
+                },{
+                    field: 'collection_number',
+                    title: '总数',
+                    cellStyle: formatTableUnit,
+                    formatter: paramsMatter,
+                }, {
+                    field: 'existing_number',
+                    title: '现有',
+                    cellStyle: formatTableUnit,
+                    formatter: paramsMatter,
+                }, {
+                    field: 'price',
+                    title: '价格',
+                    cellStyle: formatTableUnit,
+                    formatter: paramsMatter,
+                }, {
+                    field: 'publisher',
+                    title: '出版社',
+                    cellStyle: formatTableUnit,
+                    formatter: paramsMatter,
+                },
+                {
+                    field: 'introduction',
+                    title: '介绍',
+                    cellStyle: formatTableUnit,
+                    formatter: paramsMatter,
+                },
+                {
+                    checkbox: true,
+                    visible: true                  //是否显示复选框
+                },
+                {
+                    field: 'operation',
+                    title: '操作',
+                    align: 'center',
+                    valign: 'middle',
+                    formatter: option,
+                    // formatter: actionFormatter
+                },];
+
+
+
+            //这里写刷新表格连接数据库的报文
+            let data;
+            let obj={ID,KIND};
+            let post_all=JSON.stringify(obj);
+            console.log(post_all);
+
+
+
+            $.ajax({
+                type: "POST",
+               url: "/queryAll",
+                dataType: "json",
+                data:post_all,
+                contentType : "application/json",
+                success: function (data_json) {
+                    // console.log(data_json),
+                        data =data_json,
+
+
+
+                    $('#table').bootstrapTable('destroy').bootstrapTable({
+                        columns: columns,
+                        data: data
+                    });
+                },
+                error: function () {
+                    alert("查询失败,请重新查询");
+                }
+            });
+
+
+
+            $('#table').bootstrapTable('destroy').bootstrapTable({
+                columns: columns,
+                data: data,
+                clickToSelect: true,
+                showPaginationSwitch: true,
+
+
+            });
+
+
+            $('#table').resize();
+
+        }
+
+
+        //查阅所有书籍信息
+        function build(){
+            console.log("查询所有的书籍信息");
+            build_0("0","0");
+        }
+
+        //***********************************************************************************************************************************
+
+
+        function option(value, row, index) {
+            var htm = "";
+            htm = '<button id="upd"  onclick="update(\'' + escape(JSON.stringify(row)) + '\')">Edit</button>';
+            return htm;
+        }
+
+        function update(row) {
+            $(".page-content-wrapper").show();
+            let data = JSON.parse(unescape(row))
+            $('#book_id').val(data.book_id)
+            $('#book_name').val(data.book_name)
+            $('#author').val(data.author)
+            $('#shelf').val(data.shelf)
+            $('#type').val(data.type)
+            $('#collection_number').val(data.collection_number)
+            $('#existing_number').val(data.existing_number)
+            $('#price').val(data.price)
+            $('#publisher').val(data.publisher)
+            $('#introduction').val(data.introduction)
+
+        }
+
+
+
+
+        $("#close").on("click", function () {
+            $(".page-content-wrapper").hide();
+        })
+
+        $("#blank").click(function () {
+            var blank = {
+                book_id: "",
+                book_name: "",
+                author: "",
+                shelf:"",
+                type:"",
+                collection_number: "",
+                existing_number: "",
+                price: "",
+                publisher: "",
+                introduction: "",
+            };
+            $("#table").bootstrapTable('append', blank);
+        });
+
+        $("#delete").click(function () {
+            let rows = $("#table").bootstrapTable('getSelections');
+            console.log(rows);
+            if (rows.length == 0) {
+                alert("请先选择要删除的记录!");
+                return;
+            } else {
+                if (confirm("确定要删除吗？")) {
+                    let arrays = new Array();// 声明一个数组
+
+                    $(rows).each(function () {// 通过获得别选中的来进行遍历
+                        arrays.push(this.book_id);// cid为获得到的整条数据中的一列
+
+                    });
+                    let  idcard = arrays.join(','); // 获得要删除的id
+
+                    console.log(idcard);//idcard为要删除图书的id数组
+
+
+                    let str1 =idcard.toString();
+                    console.log(str1);
+                    let obj={};
+                    obj.bookID=str1;//用户名
+                    obj.kind="0";//用户名
+
+                    let postDelete=JSON.stringify(obj);
+
+                    console.log(postDelete);
+
+                    $.ajax({
+                        type: "post",
+                        url: "/delete" ,    //填写数据库url
+                        dataType: "json",
+                        data: postDelete,
+                        contentType : "application/json",
+
+                        success: function (data) {
+                            console.log(data);
+                            console.log("success");
+                            build();
+
+                            // build();
+                            // // alert("删除成功");
+                            // location = location;
+                        },
+                        error: function () {
+                            alert('删除失败, 请重新删除');
+                        }
+                    })
+                }
+            }
+        });
+
+
+        $("#updateBtn").on("click", function () {
+            var obj = document.getElementsByName('edit_way'); //选择所有name="'edit_way'"的对象，返回数组
+            //取到对象数组后，我们来循环检测它是不是被选中
+            var s = '';
+            for (var i = 0; i < obj.length; i++) {
+                if (obj[i].checked) s += obj[i].value + ','; //如果选中，将value添加到变量s中
+            }
+            // if (s.length == 0) {
+            //     alert("还没有选择任何编辑方式！")
+            // }
+            // else if (s.length == 4) {
+            //     alert("不能同时选择两种编辑方式！")
+            // }
+            // else{
+            //     let edit_id = s[0].toString();
+                let book_id = $("#book_id").val();
+                let book_name = $("#book_name").val();
+                let author = $("#author").val();
+                let shelf = $("#shelf").val();
+                let type = $("#type").val();
+                let collection_number = $("#collection_number").val();
+                let existing_number = $("#existing_number").val();
+                let price = $("#price").val();
+                let publisher = $("#publisher").val();
+                let introduction = $("#introduction").val();
+                console.log(book_id,book_name,author,collection_number,author,collection_number,existing_number,price,publisher,introduction);
+
+                let obj12={};
+                obj12.id          =4          ;
+                obj12.objectID          =book_id          ;
+                obj12.kind             = 0;
+                obj12.book_name        =book_name        ;
+                obj12.author           =author           ;
+                obj12.shelf        =shelf        ;
+                obj12.type           =type           ;
+                obj12.collection_number=collection_number;
+                obj12.existing_number  =existing_number  ;
+                obj12.price            =price            ;
+                obj12.publisher        =publisher        ;
+                obj12.introduction     =introduction     ;
+                console.log(obj12);
+
+                let postModify=JSON.stringify(obj12);
+
+                console.log(postModify);
+
+                // 下面填写ajax报文
+                $.ajax({
+                    type: "post",
+                    url: "/modify" ,  //填写数据库url
+                    dataType: "json",
+                    contentType : "application/json",
+                    data:postModify,
+                    success: function (data) {
+                        // $("#table").bootstrapTable('refresh');
+                        alert("提交成功");
+                        // location = location;
+                        console.log(data);
+                        build();
+                        console.log("success");
+                    },
+                    error: function () {
+                        alert("更改失败, 请重新更改");
+                    }
+                })
+
+            // }
+
+
+        })
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+.limiter1 {
+    width: 100%;
+    margin: 0 auto;
+}
+
+
+.container-login1001 {
+    width: 100%;
+    min-height: 100vh;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.wrap-login100 {
+    width: 500px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    /*margin-right: 20%;*/
+    /*margin-left: auto;*/
+}
+
+
+
+.login100-form {
+    width: 100%;
+}
+.login100-form-title {
+    display: block;
+    font-family: Poppins-Bold, serif;
+    font-size: 39px;
+    color: #333333;
+    line-height: 1.2;
+    text-align: center;
+}
+
